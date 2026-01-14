@@ -2,130 +2,37 @@
 <html lang="vi">
 
 <head>
-    <base target="_top">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>AFS - Advanced Project System</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            /* Hide scrollbars on the parent */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            /* Removes extra space below iframe */
+        }
+    </style>
 </head>
 
 <body>
-    <div class="bg-animation"></div>
-
-    <!-- 1. MÀN HÌNH ĐĂNG NHẬP -->
-    <section id="view-login">
-        <div class="login-container">
-            <div class="glass-panel">
-                <div class="icon-brand"><i class="fas fa-cube"></i></div>
-                <h2 class="login-title">HỆ THỐNG AFS</h2>
-                <p class="login-subtitle">QUẢN LÝ DỰ ÁN</p>
-
-                <form onsubmit="handleLogin(event)">
-                    <div class="inp-group">
-                        <i class="fas fa-user-shield"></i>
-                        <input type="text" id="log-email" placeholder="Tên đăng nhập / Email" value="admin">
-                    </div>
-                    <div class="inp-group">
-                        <i class="fas fa-key"></i>
-                        <input type="password" id="log-pass" placeholder="Mật khẩu" value="123">
-                    </div>
-                    <button type="submit" id="btn-login">TRUY CẬP HỆ THỐNG</button>
-                    <p id="login-error"
-                        style="color:#ff0033; font-size:0.8rem; margin-top:15px; display:none; text-shadow: 0 0 5px rgba(255,0,51,0.5);">
-                    </p>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. MÀN HÌNH CHÍNH APP -->
-    <section id="view-app" style="display:none;">
-        <div class="main-layout">
-            <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-            <aside class="sidebar" id="sidebar">
-                <div class="brand">
-                    <i class="fas fa-cube"></i> AFS
-                </div>
-                <div class="nav-scroll">
-                    <ul class="nav-menu">
-                        <li class="active" onclick="switchPage('dashboard', this); toggleSidebar(false)"><i
-                                class="fas fa-chart-pie"></i> TRUNG TÂM QUẢN TRỊ</li>
-                        <li onclick="switchPage('projects', this); toggleSidebar(false)"><i
-                                class="fas fa-layer-group"></i> QUẢN LÝ DỰ ÁN</li>
-                        <li onclick="switchPage('kanban', this); toggleSidebar(false)"><i class="fas fa-th-large"></i>
-                            BẢNG CÔNG VIỆC</li>
-                        <li onclick="switchPage('finance', this); toggleSidebar(false)"><i
-                                class="fas fa-file-invoice-dollar"></i> NGÂN SÁCH & CHI PHÍ</li>
-                        <li onclick="switchPage('assets', this); toggleSidebar(false)"><i class="fas fa-boxes"></i>
-                            NGUỒN LỰC TÀI SẢN</li>
-                        <li onclick="switchPage('clients', this); toggleSidebar(false)"><i
-                                class="fas fa-address-book"></i> ĐỐI TÁC CHIẾN LƯỢC</li>
-                        <li onclick="switchPage('users', this); toggleSidebar(false)"><i class="fas fa-users-cog"></i>
-                            NHÂN SỰ HỆ THỐNG</li>
-                        <li onclick="switchPage('logs', this); toggleSidebar(false)"><i class="fas fa-terminal"></i>
-                            NHẬT KÝ HOẠT ĐỘNG</li>
-                        <li onclick="switchPage('reports', this); toggleSidebar(false)"><i
-                                class="fas fa-file-contract"></i>
-                            HỆ THỐNG BÁO CÁO</li>
-                    </ul>
-                </div>
-                <div class="user-bottom" id="user-info"></div>
-            </aside>
-
-            <main>
-                <header>
-                    <div class="header-left">
-                        <div class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-                        <h2 id="page-title">HỆ THỐNG ĐIỀU HÀNH TRUNG TÂM</h2>
-                    </div>
-
-                    <div style="display:flex; align-items:center; gap:15px">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" placeholder="Tìm kiếm trong hệ thống..."
-                                oninput="handleSearch(this.value)">
-                        </div>
-                        <div id="noti-bell" onclick="toggleNotifications()"
-                            style="cursor:pointer; position:relative; font-size:1.2rem; color:var(--text-dim);"
-                            title="Thông báo">
-                            <i class="fas fa-bell"></i>
-                        </div>
-                        <div id="theme-icon" onclick="openThemePicker()"
-                            style="cursor:pointer; font-size:1.2rem; color:var(--text-dim);"
-                            title="Tùy chỉnh giao diện">
-                            <i class="fas fa-palette"></i>
-                        </div>
-                        <button class="btn-create" id="btn-main-action" onclick="openModal('project')">+ TẠO
-                            MỚI</button>
-                    </div>
-                </header>
-                <div id="content-area" class="content-scroll"></div>
-            </main>
-        </div>
-    </section>
-
-    <!-- 3. MODAL POPUP -->
-    <div id="modal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 id="modal-heading">CẤU HÌNH DỮ LIỆU</h3>
-                <span onclick="closeModal()" class="close-x"
-                    style="cursor:pointer; color:var(--accent-magenta); font-size:1.5rem;">&times;</span>
-            </div>
-            <div id="modal-body" class="modal-body"></div>
-            <div class="modal-footer">
-                <button onclick="closeModal()" class="btn-ghost">HỦY BỎ</button>
-                <button onclick="saveData()" id="btn-save" class="btn-create">ĐỒNG BỘ DỮ LIỆU</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification Container -->
-    <div class="toast-container" id="toast-container"></div>
-
-    <script src="script.js"></script>
+    <!-- 
+      REPLACE THE URL BELOW WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL 
+      Example: https://script.google.com/macros/s/AKfycbx.../exec
+    -->
+    <iframe
+        src="https://script.google.com/macros/s/AKfycbyud5yspIeIBEiWfsOTU0duteVh21GcGaNDozTqhpmqfBc6GW1vZnYOkV4c9mUEx06G9g/exec"
+        allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>
 </body>
 
 </html>
